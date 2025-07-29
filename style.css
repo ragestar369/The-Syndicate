@@ -1,0 +1,37 @@
+/* Add after the previous CSS, for login form styling */
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+#login-form label {
+  font-weight: 500;
+  color: #facc15;
+}
+
+#login-form input {
+  padding: 0.5em 0.7em;
+  border-radius: 0.6em;
+  border: none;
+  background: #232354;
+  color: #eaeaea;
+  font-size: 1.05em;
+}
+
+#login-form button {
+  margin-top: 0.8em;
+  padding: 0.5em 0;
+  border: none;
+  border-radius: 0.6em;
+  background: #6ee7b7;
+  color: #232354;
+  font-weight: 700;
+  font-size: 1.1em;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+#login-form button:hover {
+  background: #34d399;
+}

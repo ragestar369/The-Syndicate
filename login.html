@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In | The Influence Syndicate</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="live-bg"></div>
+  <nav class="menu-bar">
+    <a href="index.html" class="menu-item">Home</a>
+    <a href="login.html" class="menu-item active">Sign In</a>
+  </nav>
+  <main class="intro-content" style="max-width: 420px;">
+    <h2 style="text-align:center; margin-bottom:2rem;">Sign In</h2>
+    <form id="login-form" autocomplete="off">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autofocus>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Sign In</button>
+      <p id="login-msg"></p>
+    </form>
+  </main>
+  <script src="main.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
