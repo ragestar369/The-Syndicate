@@ -4,27 +4,285 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign In | The Influence Syndicate</title>
+  <!-- Fonts for mysterious effect -->
   <link href="https://fonts.googleapis.com/css2?family=Unica+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body, .floating-card, .floating-menu-bar {
+      font-family: 'Unica One', 'Share Tech Mono', 'Montserrat', Arial, Helvetica, sans-serif;
+    }
+    body.dark-bg {
+      background: #181d23;
+      color: #e3f7ff;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .animated-bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .floating-menu-bar {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(30, 35, 55, 0.84);
+      box-shadow: 0 8px 38px 0 #2de3ff23, 0 1px 12px #1119;
+      border-radius: 2em;
+      padding: 0.7em 2.7em;
+      min-width: 220px;
+      max-width: 75vw;
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #2de3ff44;
+      gap: 2.3em;
+      font-size: 1.14em;
+      transition: box-shadow 0.18s;
+    }
+    .floating-menu-bar:hover {
+      box-shadow: 0 12px 45px 0 #2de3ff38, 0 2px 18px #222c;
+    }
+    .menu-item {
+      color: #e3f7ff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.4em 1.1em;
+      border-radius: 2em;
+      transition: background 0.18s, color 0.18s;
+      font-family: 'Unica One', 'Montserrat', Arial, sans-serif;
+      letter-spacing: 0.03em;
+    }
+    .menu-item.active, .menu-item:hover {
+      background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+      color: #181d23;
+      box-shadow: 0 2px 12px #2de3ff28;
+    }
+    .main-app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 6.5em;
+    }
+    .panel-section {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 3.2vh 2vw;
+      box-sizing: border-box;
+    }
+    .floating-card {
+      background: rgba(34,43,76,0.97);
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 2.3em 2.2em 2.1em 2.2em;
+      border-radius: 28px;
+      box-shadow: 0 8px 38px 0 #2de3ff17, 0 1px 16px #2de3ff22;
+      text-align: left;
+      backdrop-filter: blur(10px);
+      border: 1.5px solid #2de3ff33;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .floating-card h2 {
+      font-family: 'Unica One', 'Share Tech Mono', 'Orbitron', sans-serif;
+      color: #2de3ff;
+      font-weight: 800;
+      margin-bottom: 1.1em;
+      margin-top: 0.2em;
+      letter-spacing: 0.04em;
+      font-size: 1.7em;
+      text-align: center;
+    }
+    .login-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2em;
+    }
+    .login-form label {
+      font-weight: 600;
+      color: #7bffe9;
+      margin-bottom: 0.4em;
+      font-family: 'Share Tech Mono', 'Montserrat', Arial, sans-serif;
+      letter-spacing: 0.02em;
+    }
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+      width: 100%;
+      padding: 0.8em 1.1em;
+      border: 1.5px solid #272c3d;
+      border-radius: 7px;
+      font-size: 1.1em;
+      background: #232635;
+      color: #e3f7ff;
+      box-sizing: border-box;
+      outline: none;
+      transition: border 0.16s;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .login-form input:focus {
+      border-color: #2de3ff;
+    }
+    .login-form button {
+      width: 100%;
+      padding: 0.75em 1.5em;
+      background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+      color: #181a20;
+      font-size: 1.13em;
+      border: none;
+      border-radius: 7px;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      margin-top: 0.1em;
+      margin-bottom: 1.1em;
+      box-shadow: 0 2px 8px 0 #2de3ff17;
+      transition: background 0.15s;
+      font-family: 'Unica One', 'Share Tech Mono', sans-serif;
+    }
+    .login-form button:hover {
+      background: linear-gradient(90deg,#1daaff 70%,#1de1e1 100%);
+      color: #fff;
+    }
+    .error-message {
+      color: #ff4b5c;
+      margin-top: 0.7em;
+      font-size: 1em;
+      min-height: 1.9em;
+      text-align: center;
+    }
+    @media (max-width: 950px) {
+      .floating-card { max-width: 97vw; padding: 1.2em 0.7em 1.2em 0.7em;}
+      .panel-section { padding: 2vw 1vw;}
+      .floating-menu-bar { max-width: 98vw; padding: 0.7em 1em;}
+      .main-app { padding-top: 5em;}
+    }
+    @media (max-width: 650px) {
+      .floating-card h2 { font-size: 1.25em;}
+      .floating-menu-bar { font-size: 1em; padding: 0.5em 0.7em;}
+      .main-app { padding-top: 4em;}
+    }
+  </style>
 </head>
-<body>
-  <div id="animated-bg"></div>
-  <nav class="menu-bar">
+<body class="dark-bg">
+  <canvas class="animated-bg-canvas"></canvas>
+  <nav class="floating-menu-bar">
     <a href="index.html" class="menu-item">Home</a>
     <a href="login.html" class="menu-item active">Sign In</a>
   </nav>
-  <main class="floating-card" style="max-width: 420px;">
-    <h2 style="text-align:center; margin-bottom:2rem;">Sign In</h2>
-    <form id="login-form" autocomplete="off">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required autofocus>
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
-      <button type="submit">Sign In</button>
-      <p id="login-msg"></p>
-    </form>
+  <main class="main-app">
+    <section class="panel-section">
+      <div class="floating-card">
+        <h2>Sign In</h2>
+        <form class="login-form" id="login-form" autocomplete="off">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required autofocus>
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+          <button type="submit">Sign In</button>
+          <div class="error-message" id="login-msg"></div>
+        </form>
+      </div>
+    </section>
   </main>
-  <script src="main.js"></script>
-  <script src="login.js"></script>
+  <script>
+    // Animated neon floating blobs background for The Syndicate
+    const canvas = document.querySelector('.animated-bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    const BLOB_COLORS = [
+      "#2de3ff88", "#7bffe988", "#2de3ff55", "#00fff033", "#00faff44"
+    ];
+    const BLOB_COUNT = 12;
+    const blobs = [];
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+    for (let i = 0; i < BLOB_COUNT; i++) {
+      blobs.push({
+        x: rand(0, width),
+        y: rand(0, height),
+        r: rand(70, 170),
+        dx: rand(-0.18, 0.18),
+        dy: rand(-0.12, 0.12),
+        color: BLOB_COLORS[Math.floor(rand(0, BLOB_COLORS.length))],
+        alpha: rand(0.12, 0.25)
+      });
+    }
+    function animateBackground() {
+      ctx.clearRect(0, 0, width, height);
+      for (let blob of blobs) {
+        ctx.save();
+        ctx.globalAlpha = blob.alpha;
+        let grad = ctx.createRadialGradient(
+          blob.x, blob.y, blob.r * 0.2,
+          blob.x, blob.y, blob.r
+        );
+        grad.addColorStop(0, blob.color);
+        grad.addColorStop(1, "#181d2300");
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.r, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.shadowColor = blob.color.replace(/88|55|44|33/, "AA");
+        ctx.shadowBlur = blob.r * 0.5;
+        ctx.fill();
+        ctx.restore();
+        blob.x += blob.dx;
+        blob.y += blob.dy;
+        if (blob.x - blob.r < 0 || blob.x + blob.r > width) blob.dx *= -1;
+        if (blob.y - blob.r < 0 || blob.y + blob.r > height) blob.dy *= -1;
+      }
+      requestAnimationFrame(animateBackground);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", animateBackground);
+    } else {
+      animateBackground();
+    }
+    // Simple login for demo
+    const VALID_USERS = [
+      { username: "admin", password: "syndicate2024" }
+    ];
+    const form = document.getElementById('login-form');
+    const msg = document.getElementById('login-msg');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = form.username.value.trim();
+      const pass = form.password.value;
+      const valid = VALID_USERS.some(u => u.username === user && u.password === pass);
+      if (valid) {
+        sessionStorage.setItem('influence_auth', user);
+        window.location.href = "index.html";
+      } else {
+        msg.textContent = "Invalid credentials.";
+      }
+    });
+    if (sessionStorage.getItem('influence_auth')) {
+      window.location.href = "index.html";
+    }
+  </script>
 </body>
 </html>
