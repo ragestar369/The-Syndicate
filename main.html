@@ -34,14 +34,13 @@
   box-shadow: 0 8px 38px 0 #2de3ff23;
   border-radius: 2em;
   padding: 0.7em 2em;
-  min-width: 220px;
-  max-width: 600px;
-  width: auto;
-  backdrop-filter: blur(8px);
   border: 1.5px solid #2de3ff44;
   gap: 1.5em;
   font-size: 1.08em;
   transition: box-shadow 0.18s;
+  width: auto;        /* Make width fit content! */
+  min-width: 220px;   /* Minimum size for small screens */
+  max-width: 95vw;    /* Never stretch across full screen */
 }
     .menu-link {
       color: #e3f7ff;
