@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Syndicate - Main Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body, .floating-card, .menu-bar {
+      font-family: 'Montserrat', 'Orbitron', Arial, Helvetica, sans-serif;
+      background: #181d23;
+      color: #e3f7ff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .animated-bg-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0; pointer-events: none;
+    }
+    .menu-bar {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      background: rgba(30, 35, 55, 0.84);
+      box-shadow: 0 8px 38px 0 #2de3ff23;
+      border-radius: 2em;
+      padding: 0.7em 2em;
+      min-width: 220px;
+      max-width: 98vw;
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #2de3ff44;
+      gap: 1.5em;
+      font-size: 1.08em;
+      transition: box-shadow 0.18s;
+    }
+    .menu-link {
+      color: #e3f7ff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.4em 1em;
+      border-radius: 2em;
+      transition: background 0.18s, color 0.18s;
+      font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .menu-link.active, .menu-link:hover {
+      background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+      color: #181d23;
+      box-shadow: 0 2px 12px #2de3ff28;
+    }
+    .menu-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-weight: 700;
+    }
+    .main-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1400px;
+      margin: 110px auto 0 auto;
+      padding: 2vw 2vw 2vw 2vw;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      grid-gap: 2.2em;
+    }
+    .floating-card {
+      background: rgba(34,43,76,0.97);
+      border-radius: 24px;
+      box-shadow: 0 8px 38px 0 #2de3ff17, 0 1px 16px #2de3ff22;
+      padding: 2.1em 2em 1.8em 2em;
+      text-align: left;
+      backdrop-filter: blur(10px);
+      border: 1.5px solid #2de3ff33;
+      margin-bottom: 1.2em;
+      min-height: 320px;
+    }
+    .card-header {
+      font-family: 'Orbitron', 'Montserrat', Arial, Helvetica, sans-serif;
+      color: #2de3ff;
+      font-size: 1.23em;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 0.8em;
+    }
+    .card-section {
+      margin-bottom: 2em;
+    }
+    /* Rewards Section */
+    .rewards-list {
+      list-style: none;
+      margin: 0; padding: 0;
+    }
+    .reward-item {
+      background: #222b4c;
+      color: #7bffe9;
+      border-radius: 10px;
+      margin-bottom: 1em;
+      padding: 1em 1.1em;
+      font-size: 1.09em;
+      font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 1em;
+    }
+    /* Teams Messaging Section */
+    .teams-chat {
+      background: #232635;
+      border-radius: 13px;
+      padding: 1.1em 1.2em;
+      box-shadow: 0 2px 12px #2de3ff0a;
+      min-height: 200px;
+      max-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 1em;
+    }
+    .team-message {
+      margin-bottom: 0.8em;
+      font-size: 1em;
+      color: #e3f7ff;
+      background: #181d23;
+      border-radius: 6px;
+      padding: 0.5em 0.7em;
+      box-shadow: 0 1px 6px #2de3ff15;
+    }
+    .teams-send-form {
+      display: flex;
+      gap: 0.8em;
+      margin-top: 0.8em;
+    }
+    .teams-send-form input, .teams-send-form button {
+      font-size: 1em;
+      padding: 0.5em;
+      border-radius: 6px;
+      border: none;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .teams-send-form input {
+      flex: 1;
+      background: #222b4c;
+      color: #e3f7ff;
+      border: 1px solid #2de3ff33;
+    }
+    .teams-send-form button {
+      background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+      color: #181d23;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .encrypt-btn {
+      display: inline-block;
+      margin-top: 1em;
+      padding: 0.5em 1.1em;
+      background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+      color: #181a20;
+      font-size: 1.06em;
+      border: none;
+      border-radius: 7px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 7px 0 #2de3ff17;
+      transition: background 0.13s;
+      font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+    }
+    .encrypt-btn:hover {
+      background: linear-gradient(90deg,#1daaff 70%,#1de1e1 100%);
+      color: #fff;
+    }
+    @media (max-width: 1100px) {
+      .main-content {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+    }
+    @media (max-width: 700px) {
+      .main-content {
+        padding: 1vw 2vw;
+        grid-gap: 1.5em;
+      }
+      .floating-card {
+        padding: 1.1em 0.6em;
+      }
+      .menu-bar {
+        padding: 0.7em 0.8em;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas class="animated-bg-canvas"></canvas>
+  <!-- Menu Bar -->
+  <nav class="menu-bar">
+    <span class="menu-profile"><i class="fa-solid fa-user"></i> <span id="menu-username">User</span></span>
+    <a href="#" class="menu-link" id="logout-link"><i class="fa-solid fa-sign-out-alt"></i>Logout</a>
+    <a href="#" class="menu-link"><i class="fa-solid fa-book"></i>Records</a>
+    <a href="#" class="menu-link"><i class="fa-solid fa-award"></i>Titles</a>
+    <a href="#" class="menu-link" id="private-msg-link"><i class="fa-solid fa-envelope"></i>Private Messaging</a>
+    <a href="#" class="menu-link"><i class="fa-solid fa-file-lines"></i>Logs</a>
+  </nav>
+
+  <div class="main-content">
+    <!-- Announcements Section -->
+    <div class="floating-card" id="announcements-card">
+      <div class="card-header"><i class="fa-solid fa-bullhorn"></i> Announcements</div>
+      <div class="card-section" id="announcements-list">
+        <!-- Announcements will be loaded here -->
+        <div style="color:#b2bec3;">No announcements yet.</div>
+      </div>
+    </div>
+    <!-- Tasks Section -->
+    <div class="floating-card" id="tasks-card">
+      <div class="card-header"><i class="fa-solid fa-tasks"></i> Tasks</div>
+      <div class="card-section" id="tasks-list">
+        <!-- Tasks will be loaded here -->
+        <div style="color:#b2bec3;">No tasks yet.</div>
+      </div>
+    </div>
+    <!-- Rewards Section -->
+    <div class="floating-card" id="rewards-card">
+      <div class="card-header"><i class="fa-solid fa-gift"></i> Rewards</div>
+      <ul class="rewards-list" id="rewards-list">
+        <li class="reward-item"><i class="fa-solid fa-star"></i> Syndicate Star - For outstanding influence</li>
+        <li class="reward-item"><i class="fa-solid fa-medal"></i> Cabinet Medal - For leadership in operations</li>
+        <!-- Add more rewards as needed -->
+      </ul>
+    </div>
+    <!-- Teams Messaging Section -->
+    <div class="floating-card" id="teams-card">
+      <div class="card-header"><i class="fa-solid fa-comments"></i> Team Messaging</div>
+      <div class="teams-chat" id="teams-chat">
+        <!-- Team messages will appear here -->
+      </div>
+      <form class="teams-send-form" id="teams-send-form">
+        <input type="text" id="teams-message-input" placeholder="Type your team message..." required>
+        <button type="submit"><i class="fa-solid fa-paper-plane"></i> Send</button>
+      </form>
+    </div>
+    <!-- Encryption Button -->
+    <div class="floating-card" id="encryption-card">
+      <div class="card-header"><i class="fa-solid fa-lock"></i> Encryption</div>
+      <button class="encrypt-btn" id="encrypt-btn"><i class="fa-solid fa-shield-halved"></i> Encrypt Data</button>
+    </div>
+  </div>
+
+  <script>
+    // Neon animated background
+    const canvas = document.querySelector('.animated-bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    const BLOB_COLORS = [
+      "#2de3ff88", "#7bffe988", "#2de3ff55", "#00fff033", "#00faff44"
+    ];
+    const BLOB_COUNT = 12;
+    const blobs = [];
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+    for (let i = 0; i < BLOB_COUNT; i++) {
+      blobs.push({
+        x: rand(0, width),
+        y: rand(0, height),
+        r: rand(70, 170),
+        dx: rand(-0.18, 0.18),
+        dy: rand(-0.12, 0.12),
+        color: BLOB_COLORS[Math.floor(rand(0, BLOB_COLORS.length))],
+        alpha: rand(0.12, 0.25)
+      });
+    }
+    function animateBackground() {
+      ctx.clearRect(0, 0, width, height);
+      for (let blob of blobs) {
+        ctx.save();
+        ctx.globalAlpha = blob.alpha;
+        let grad = ctx.createRadialGradient(
+          blob.x, blob.y, blob.r * 0.2,
+          blob.x, blob.y, blob.r
+        );
+        grad.addColorStop(0, blob.color);
+        grad.addColorStop(1, "#181d2300");
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.r, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.shadowColor = blob.color.replace(/88|55|44|33/, "AA");
+        ctx.shadowBlur = blob.r * 0.5;
+        ctx.fill();
+        ctx.restore();
+        blob.x += blob.dx;
+        blob.y += blob.dy;
+        if (blob.x - blob.r < 0 || blob.x + blob.r > width) blob.dx *= -1;
+        if (blob.y - blob.r < 0 || blob.y + blob.r > height) blob.dy *= -1;
+      }
+      requestAnimationFrame(animateBackground);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", animateBackground);
+    } else {
+      animateBackground();
+    }
+
+    // Demo: Simulate loading announcements/tasks/messages/rewards/user data
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set username
+      document.getElementById('menu-username').textContent = "CabinetUser";
+
+      // Announcements
+      const announcements = [
+        { title: "Operation Nightfall", desc: "All cells report status before midnight.", time: "2025-07-30 12:00" },
+        { title: "Cabinet Meeting", desc: "Venue: Black Room. Time: 16:00.", time: "2025-07-29 16:00" }
+      ];
+      const annList = document.getElementById('announcements-list');
+      annList.innerHTML = '';
+      announcements.forEach(a => {
+        const el = document.createElement('div');
+        el.className = "announcement-card";
+        el.innerHTML = `<strong>${a.title}</strong><br><span>${a.desc}</span><br><span style="color:#b2bec3;font-size:0.93em;">${a.time}</span>`;
+        annList.appendChild(el);
+      });
+
+      // Tasks
+      const tasks = [
+        { title: "Monitor new members", desc: "Report anomalies by 8pm.", completed: false },
+        { title: "Submit weekly influence report", desc: "Deadline: Sunday.", completed: true }
+      ];
+      const taskList = document.getElementById('tasks-list');
+      taskList.innerHTML = '';
+      tasks.forEach(t => {
+        const el = document.createElement('div');
+        el.className = "task-card" + (t.completed ? " task-completed" : "");
+        el.innerHTML = `<strong>${t.title}</strong><br><span>${t.desc}</span>`;
+        taskList.appendChild(el);
+      });
+
+      // Team Messaging
+      const messages = [
+        { user: "Shadow", msg: "Status green." },
+        { user: "LightSignature", msg: "Cabinet meeting confirmed." }
+      ];
+      const chat = document.getElementById('teams-chat');
+      chat.innerHTML = '';
+      messages.forEach(m => {
+        const e = document.createElement('div');
+        e.className = "team-message";
+        e.textContent = `[${m.user}]: ${m.msg}`;
+        chat.appendChild(e);
+      });
+      document.getElementById('teams-send-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const val = document.getElementById('teams-message-input').value.trim();
+        if (!val) return;
+        const e = document.createElement('div');
+        e.className = "team-message";
+        e.textContent = `[You]: ${val}`;
+        chat.appendChild(e);
+        document.getElementById('teams-message-input').value = "";
+        chat.scrollTop = chat.scrollHeight;
+      });
+
+      // Encryption button
+      document.getElementById('encrypt-btn').onclick = function() {
+        alert("Data encrypted (demo)");
+      };
+
+      // Private messaging
+      document.getElementById('private-msg-link').onclick = function(e) {
+        e.preventDefault();
+        alert("Private messaging panel (demo)");
+      };
+
+      // Logout
+      document.getElementById('logout-link').onclick = function(e) {
+        e.preventDefault();
+        alert("Logging out (demo)");
+        window.location.href = "index.html";
+      };
+    });
+  </script>
+</body>
+</html>
